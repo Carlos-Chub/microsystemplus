@@ -1,0 +1,34 @@
+# TIEMPO DE DURACION DE LA CACHE JS, 43200 SEGUNDOS, 12 HORAS
+<FilesMatch "\.(js)$">
+    Header set Cache-Control "max-age=43200, public"
+</FilesMatch>
+
+# Restringir acceso al directorio raíz
+<Directory />
+    Require all denied
+</Directory>
+
+# Denegar acceso a archivos y directorios específicos
+<FilesMatch "^(\.htaccess|\.htpasswd|\.env|config\.php|composer\.(json|lock)|package\.json)$">
+    Require all denied
+</FilesMatch>
+
+# No listar directorios si entran por url
+Options -Indexes
+
+# Forzar HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Configurar cabeceras de seguridad
+Header always set X-XSS-Protection "1; mode=block"
+Header always set X-Frame-Options "DENY"
+Header always set X-Content-Type-Options "nosniff"
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
